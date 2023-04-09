@@ -84,23 +84,26 @@ resource "aws_iam_role" "codebuild_role" {
 EOF
 }
 
-resource "aws_iam_role_policy" "cloudbuild_policy" {
-  role = aws_iam_role.codebuild_role.name
+# resource "aws_iam_role_policy" "cloudbuild_policy" {
+#   role = aws_iam_role.codebuild_role.name
 
-  policy = jsonencode({
-    Version = "2012-10-17",
-    Statement = [
-      {
-        Action = [
-          "ecr:*"
-        ],
-        Effect = "Allow",
-        Resource = "*"
-      }
-    ]
-  })
-}
-
+#   policy = jsonencode({
+#     Version = "2012-10-17",
+#     Statement = [
+#       {
+#         Action = [
+#           "ecr:*"
+#         ],
+#         Effect = "Allow",
+#         Resource = "*"
+#       }
+#     ]
+#   })
+# }
+# resource "aws_iam_role_policy_attachment" "code_build_policy_attachment" {
+#   policy_arn = aws_iam_policy.cloudbuild_policy.arn
+#   role       = aws_iam_role.codebuild_role.name
+# }
 
 # Create an IAM role for the CodePipeline service to assume
 resource "aws_iam_role" "codepipeline" {
@@ -126,6 +129,10 @@ resource "aws_iam_role_policy_attachment" "codepipeline_ecr_policy_attachment" {
   role       = aws_iam_role.codepipeline.name
 }
 
+resource "aws_iam_role_policy_attachment" "codebuild_ecr_policy_attachment" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryPowerUser"
+  role       = aws_iam_role.codebuild_role.name
+}
 #######################EKS Describe ##################
 resource "aws_iam_policy" "eks_policy" {
   name        = "eks-describe-policy"
@@ -161,4 +168,30 @@ resource "aws_iam_role" "eks_describe_role" {
 resource "aws_iam_role_policy_attachment" "eks_describe_policy_attachment" {
   policy_arn = aws_iam_policy.eks_policy.arn
   role       = aws_iam_role.eks_describe_role.name
+}
+
+
+##################################################
+resource "aws_iam_policy" "eks_assume_role_policy" {
+  name        = "eks-codebuild-sts-assume-role"
+  description = "CodeBuild to interact with EKS cluster to perform changes"
+  policy      = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action   = "sts:AssumeRole"
+        Effect   = "Allow"
+        Resource = aws_iam_role.eks_describe_role.arn
+      }
+    ]
+  })
+  depends_on = [
+    aws_iam_role.codebuild_role,
+    aws_iam_role.eks_describe_role
+  ]
+}
+
+resource "aws_iam_role_policy_attachment" "code_build_policy_attachment_2" {
+  policy_arn = aws_iam_policy.eks_assume_role_policy.arn
+  role       = aws_iam_role.codebuild_role.name
 }
