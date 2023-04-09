@@ -125,3 +125,40 @@ resource "aws_iam_role_policy_attachment" "codepipeline_ecr_policy_attachment" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryPowerUser"
   role       = aws_iam_role.codepipeline.name
 }
+
+#######################EKS Describe ##################
+resource "aws_iam_policy" "eks_policy" {
+  name        = "eks-describe-policy"
+  policy      = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect    = "Allow"
+        Action    = "eks:Describe*"
+        Resource  = "*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role" "eks_describe_role" {
+  name = "eks-describe-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "eks.amazonaws.com"
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "eks_describe_policy_attachment" {
+  policy_arn = aws_iam_policy.eks_policy.arn
+  role       = aws_iam_role.eks_describe_role.name
+}

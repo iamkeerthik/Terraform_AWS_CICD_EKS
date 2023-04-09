@@ -1,5 +1,5 @@
 resource "aws_eks_node_group" "worker-node-group" {
-  cluster_name    = aws_eks_cluster.suremdm-eks.name
+  cluster_name    = aws_eks_cluster.devops-eks.name
   node_group_name = "${var.name}-Nodegroup"
   node_role_arn   = data.aws_iam_role.node_role.arn
   subnet_ids      = [data.aws_subnet.subnet_3.id, data.aws_subnet.subnet_4.id]

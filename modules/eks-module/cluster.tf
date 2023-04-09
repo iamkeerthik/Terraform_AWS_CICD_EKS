@@ -1,4 +1,4 @@
-resource "aws_eks_cluster" "suremdm-eks" {
+resource "aws_eks_cluster" "devops-eks" {
   name     = "${var.name}-eks-cluster"
   version  = var.eks_version
   role_arn = data.aws_iam_role.cluster_role.arn
@@ -15,4 +15,15 @@ resource "aws_eks_cluster" "suremdm-eks" {
     Name = "${var.name}-eks-cluster"
   }
 
+}
+
+
+resource "null_resource" "apply_config_map" {
+  provisioner "local-exec" {
+    command = "eksctl create iamidentitymapping --cluster ${aws_eks_cluster.devops-eks.name} --arn ${data.aws_iam_role.describe_role.arn} --username build --group system:masters"
+  }
+
+  depends_on = [
+    aws_eks_cluster.devops-eks,
+  ]
 }
