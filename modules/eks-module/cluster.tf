@@ -24,6 +24,6 @@ resource "null_resource" "apply_config_map" {
   }
 
   depends_on = [
-    aws_eks_cluster.devops-eks,
+    aws_eks_cluster.devops-eks
   ]
 }

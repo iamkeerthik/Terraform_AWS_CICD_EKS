@@ -1,3 +1,9 @@
+terraform {
+  backend "local" {
+    path = "backend/cicd-terraform.tfstate"
+  }
+}
+
 module "ecr" {
   source ="../modules/ecr-module"
   name = var.name

@@ -134,15 +134,19 @@ resource "aws_iam_role_policy_attachment" "codebuild_ecr_policy_attachment" {
   role       = aws_iam_role.codebuild_role.name
 }
 #######################EKS Describe ##################
-resource "aws_iam_policy" "eks_policy" {
+resource "aws_iam_policy" "eks_describe_policy" {
   name        = "eks-describe-policy"
+  path        = "/"
+  description = "Custom policy for EKS describe access"
   policy      = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
-        Effect    = "Allow"
-        Action    = "eks:Describe*"
-        Resource  = "*"
+        Action   = [
+          "eks:Describe*"
+        ]
+        Effect   = "Allow"
+        Resource = "*"
       }
     ]
   })
@@ -150,7 +154,6 @@ resource "aws_iam_policy" "eks_policy" {
 
 resource "aws_iam_role" "eks_describe_role" {
   name = "eks-describe-role"
-
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -165,11 +168,10 @@ resource "aws_iam_role" "eks_describe_role" {
   })
 }
 
-resource "aws_iam_role_policy_attachment" "eks_describe_policy_attachment" {
-  policy_arn = aws_iam_policy.eks_policy.arn
+resource "aws_iam_role_policy_attachment" "eks_describe_policy" {
+  policy_arn = aws_iam_policy.eks_describe_policy.arn
   role       = aws_iam_role.eks_describe_role.name
 }
-
 
 ##################################################
 resource "aws_iam_policy" "eks_assume_role_policy" {
