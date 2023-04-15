@@ -44,7 +44,7 @@ eks_version             = "1.23"
 eks_instance_type       = "t2.micro"
 cluster_role_name       = "suremdm-eks-cluster-role"
 node_role_name          = "eks-node-group-role"
-region                  = "ap-south-1"
+region                  = "us-east-1"
 
 #####################RDS######################
   engine_name = "mysql"

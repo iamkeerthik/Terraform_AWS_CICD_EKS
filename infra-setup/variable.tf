@@ -120,17 +120,14 @@ variable "region" {
 variable "engine_name" {
   description = "Enter the DB engine"
   type        = string
-  default     = "mysql"
 }
 variable "user_name" {
   description = "Enter the username for DB"
   type        = string
-  default     = "tcw"
 }
 variable "pass" {
   description = "Enter the username for DB"
   type        = string
-  default     = "TheCloudWorld.2019"
 }
 variable "multi_az_deployment" {
   description = "Enable or disable multi-az deployment"
@@ -152,5 +149,4 @@ variable "delete_automated_backup" {
 }
 variable "instance_class" {
   type    = string
-  default = "db.t2.micro"
 }

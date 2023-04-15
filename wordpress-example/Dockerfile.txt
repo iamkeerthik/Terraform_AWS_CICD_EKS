@@ -1,0 +1,52 @@
+FROM php:7.4-apache
+
+# Install required packages
+RUN apt-get update && apt-get install -y \
+    wget \
+    unzip \
+    libfreetype6-dev \
+    libjpeg62-turbo-dev \
+    libpng-dev \
+    libzip-dev \
+    zip \
+    libicu-dev \
+    libpq-dev
+
+# Install PHP extensions
+RUN docker-php-ext-install -j$(nproc) \
+    pdo_mysql \
+    mysqli \
+    gd \
+    intl \
+    zip
+
+# Download and extract WordPress
+RUN wget https://wordpress.org/latest.tar.gz && \
+    tar -xzvf latest.tar.gz && \
+    rm latest.tar.gz && \
+    mv wordpress/* /var/www/html && \
+    rmdir wordpress
+
+# Set the correct permissions for WordPress
+RUN chown -R www-data:www-data /var/www/html && \
+    chmod -R 755 /var/www/html && \
+    find /var/www/html -type d -exec chmod 750 {} \;
+
+# Set up RDS as the backend database
+ENV WORDPRESS_DB_HOST=<your-rds-endpoint>
+ENV WORDPRESS_DB_NAME=<your-db-name>
+ENV WORDPRESS_DB_USER=<your-db-username>
+ENV WORDPRESS_DB_PASSWORD=<your-db-password>
+
+# Set up wp-config.php with the RDS configuration
+RUN mv /var/www/html/wp-config-sample.php /var/www/html/wp-config.php && \
+    sed -i "s/database_name_here/$WORDPRESS_DB_NAME/" /var/www/html/wp-config.php && \
+    sed -i "s/username_here/$WORDPRESS_DB_USER/" /var/www/html/wp-config.php && \
+    sed -i "s/password_here/$WORDPRESS_DB_PASSWORD/" /var/www/html/wp-config.php && \
+    sed -i "s/localhost/$WORDPRESS_DB_HOST/" /var/www/html/wp-config.php
+
+# Expose port 80 for Apache
+EXPOSE 80
+
+# Start Apache
+CMD ["apache2-foreground"]

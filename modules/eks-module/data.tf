@@ -74,10 +74,10 @@ data "aws_iam_role" "node_role" {
 
 }
 data "aws_iam_role" "describe_role" {
-  name = "eks_describe_role"
+  name = "eks-describe-role"
 
 }
 
-# data "aws_iam_policy" "lbcIAMPolicy" {
-#   name = "AWSLoadBalancerControllerIAMPolicy"
-# }
+data "aws_iam_policy" "lbcIAMPolicy" {
+  name = "AWSLoadBalancerControllerIAMPolicy"
+}

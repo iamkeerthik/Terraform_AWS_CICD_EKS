@@ -4,6 +4,16 @@ terraform {
   }
 }
 
+#use for remote backend as s3
+# terraform {
+#   backend "s3" {
+#     bucket  = "terraform-statefiles-keerthik"
+#     key     = "dev-test-env/infra-terraform.tfstate"
+#     region  = "ap-south-1"
+#     profile = "Test"
+#   }
+# }
+
 module "vpc" {
     source = "../modules/vpc-module"
     name                       = var.name
@@ -57,5 +67,13 @@ module "vpc" {
 #   multi_az_deployment = var.multi_az_deployment
 #   delete_automated_backup = var.delete_automated_backup
 #   skip_finalSnapshot = var.skip_finalSnapshot
-
 # }
+
+module "local-exec" {
+  source = "../modules/local-provissioner"
+  depends_on = [
+    module.eks
+  ]
+  name = var.name
+  region = var.region
+}
