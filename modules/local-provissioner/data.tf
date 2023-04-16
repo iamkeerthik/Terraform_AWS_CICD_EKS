@@ -14,3 +14,13 @@ data "aws_iam_role" "describe_role" {
 data "aws_iam_policy" "lbcIAMPolicy" {
   name = "AWSLoadBalancerControllerIAMPolicy"
 }
+
+data "aws_iam_policy" "ebs-csi" {
+  name = "AmazonEBSCSIDriverPolicy"
+}
+
+data "aws_caller_identity" "current" {}
+
+output "account_id" {
+  value = data.aws_caller_identity.current.account_id
+}

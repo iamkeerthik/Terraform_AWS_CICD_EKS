@@ -1,5 +1,5 @@
 #################______VPC________##############
-name                       = "Terraform"
+name                       = "keerthik"
 cidr                       = "10.0.0.0/16"
 public_subnets_cidr_1      = "10.0.1.0/24"
 public_subnets_cidr_2      = "10.0.2.0/24"
@@ -33,8 +33,8 @@ sg_rules = [
 ]
 
 #################_______EKS_________##############
-asg_desired_size        = 2
-asg_max_size            = 2
+asg_desired_size        = 3
+asg_max_size            = 3
 asg_min_size            = 1
 # launch_template_id      = "lt-03fbea4b65e2a13fe"
 # launch_template_version = 2

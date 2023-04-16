@@ -1,0 +1,4 @@
+prometheus:
+  replicaCount: 1
+grafana:
+  replicaCount: 1
