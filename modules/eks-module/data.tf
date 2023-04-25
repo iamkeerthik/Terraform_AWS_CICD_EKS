@@ -81,3 +81,6 @@ data "aws_iam_role" "describe_role" {
 data "aws_iam_policy" "lbcIAMPolicy" {
   name = "AWSLoadBalancerControllerIAMPolicy"
 }
+data "tls_certificate" "eks" {
+  url = aws_eks_cluster.suremdm-eks.identity.0.oidc.0.issuer
+}
